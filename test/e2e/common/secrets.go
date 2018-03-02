@@ -132,9 +132,9 @@ func newEnvFromSecret(namespace, name string) *v1.Secret {
 			Name:      name,
 		},
 		Data: map[string][]byte{
-			"data_1": []byte("value-1\n"),
-			"data_2": []byte("value-2\n"),
-			"data_3": []byte("value-3\n"),
+			"DATA_1": []byte("value-1\n"),
+			"DATA_2": []byte("value-2\n"),
+			"DATA_3": []byte("value-3\n"),
 		},
 	}
 }
