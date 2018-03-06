@@ -63,7 +63,7 @@ var _ = Describe("[sig-api-machinery] Secrets", func() {
 										LocalObjectReference: v1.LocalObjectReference{
 											Name: name,
 										},
-										Key: "data-1",
+										Key: "DATA_1",
 									},
 								},
 							},
