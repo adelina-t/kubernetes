@@ -366,9 +366,9 @@ func secretForTest(namespace, name string) *v1.Secret {
 			Name:      name,
 		},
 		Data: map[string][]byte{
-			"data-1": []byte("value-1\n"),
-			"data-2": []byte("value-2\n"),
-			"data-3": []byte("value-3\n"),
+			"DATA_1": []byte("value-1\n"),
+			"DATA_2": []byte("value-2\n"),
+			"DATA_3": []byte("value-3\n"),
 		},
 	}
 }

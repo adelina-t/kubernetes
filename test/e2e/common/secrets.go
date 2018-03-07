@@ -63,7 +63,7 @@ var _ = Describe("[sig-api-machinery] Secrets", func() {
 										LocalObjectReference: v1.LocalObjectReference{
 											Name: name,
 										},
-										Key: "data-1",
+										Key: "DATA_1",
 									},
 								},
 							},
@@ -108,7 +108,7 @@ var _ = Describe("[sig-api-machinery] Secrets", func() {
 								SecretRef: &v1.SecretEnvSource{LocalObjectReference: v1.LocalObjectReference{Name: name}},
 							},
 							{
-								Prefix:    "p_",
+								Prefix:    "P_",
 								SecretRef: &v1.SecretEnvSource{LocalObjectReference: v1.LocalObjectReference{Name: name}},
 							},
 						},
@@ -119,8 +119,8 @@ var _ = Describe("[sig-api-machinery] Secrets", func() {
 		}
 
 		f.TestContainerOutput("consume secrets", pod, 0, []string{
-			"data_1=value-1", "data_2=value-2", "data_3=value-3",
-			"p_data_1=value-1", "p_data_2=value-2", "p_data_3=value-3",
+			"DATA_1=value-1", "DATA_2=value-2", "DATA_3=value-3",
+			"P_DATA_1=value-1", "P_DATA_2=value-2", "P_DATA_3=value-3",
 		})
 	})
 })
@@ -132,9 +132,9 @@ func newEnvFromSecret(namespace, name string) *v1.Secret {
 			Name:      name,
 		},
 		Data: map[string][]byte{
-			"data_1": []byte("value-1\n"),
-			"data_2": []byte("value-2\n"),
-			"data_3": []byte("value-3\n"),
+			"DATA_1": []byte("value-1\n"),
+			"DATA_2": []byte("value-2\n"),
+			"DATA_3": []byte("value-3\n"),
 		},
 	}
 }
