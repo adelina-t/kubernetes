@@ -188,6 +188,11 @@ func timeTrack(start time.Time, name string) {
 	klog.Infof("%s took %d nanoseconds", name, elapsed.Nanoseconds())
 }
 
+func genUUID() string {
+	       id := uuid.New()
+	       return id.String()
+}
+
 // relist queries the container runtime for list of pods/containers, compare
 // with the internal pods/containers, and generates events accordingly.
 func (g *GenericPLEG) relist() {
@@ -199,8 +204,10 @@ func (g *GenericPLEG) relist() {
 	}
 
 	timestamp := g.clock.Now()
+	start1 := time.Now()
+	relist_id := genUUID()
 	defer func() {
-		timeTrack(time.Now(), "### RELIST")
+		timeTrack(start1, fmt.Sprintf("### RELIST : ID %s ", relist_id))
 		metrics.PLEGRelistDuration.Observe(metrics.SinceInSeconds(timestamp))
 		metrics.DeprecatedPLEGRelistLatency.Observe(metrics.SinceInMicroseconds(timestamp))
 	}()
@@ -208,7 +215,7 @@ func (g *GenericPLEG) relist() {
 	// Get all the pods.
 	start := time.Now()
 	podList, err := g.runtime.GetPods(true)
-	timeTrack(start, "### GET PODS IN PLEG")
+	timeTrack(start, fmt.Sprintf("### GET PODS IN PLEG: ID %s", relist_id))
 	if err != nil {
 		klog.Errorf("GenericPLEG: Unable to retrieve pods: %v", err)
 		return
