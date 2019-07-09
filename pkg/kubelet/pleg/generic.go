@@ -21,6 +21,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/google/uuid"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/clock"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -189,8 +190,8 @@ func timeTrack(start time.Time, name string) {
 }
 
 func genUUID() string {
-	       id := uuid.New()
-	       return id.String()
+	id := uuid.New()
+	return id.String()
 }
 
 // relist queries the container runtime for list of pods/containers, compare
