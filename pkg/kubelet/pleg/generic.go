@@ -260,6 +260,7 @@ func (g *GenericPLEG) relist() {
 	// podCache.
 	for pid, events := range eventsByPodID {
 		pod := g.podRecords.getCurrent(pid)
+		klog.Infof("#### Inspecting pod %s with events %v", pid, events)
 		if g.cacheEnabled() {
 			// updateCache() will inspect the pod and update the cache. If an
 			// error occurs during the inspection, we want PLEG to retry again
@@ -270,13 +271,14 @@ func (g *GenericPLEG) relist() {
 			// inspecting the pod and getting the PodStatus to update the cache
 			// serially may take a while. We should be aware of this and
 			// parallelize if needed.
+			start2 := time.Now()
 			if err := g.updateCache(pod, pid); err != nil {
 				// Rely on updateCache calling GetPodStatus to log the actual error.
 				klog.V(4).Infof("PLEG: Ignoring events for pod %s/%s: %v", pod.Name, pod.Namespace, err)
 
 				// make sure we try to reinspect the pod during the next relisting
 				needsReinspection[pid] = pod
-
+				timeTrack(start2, fmt.Sprintf("###$$ UPDATE CACHE CALL L281 : ID %s", relist_id))
 				continue
 			} else if _, found := g.podsToReinspect[pid]; found {
 				// this pod was in the list to reinspect and we did so because it had events, so remove it
