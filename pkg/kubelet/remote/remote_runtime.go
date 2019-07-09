@@ -153,16 +153,18 @@ func (r *RemoteRuntimeService) RemovePodSandbox(podSandBoxID string) error {
 func (r *RemoteRuntimeService) PodSandboxStatus(podSandBoxID string) (*runtimeapi.PodSandboxStatus, error) {
 	ctx, cancel := getContextWithTimeout(r.timeout)
 	defer cancel()
-	klog.Infof("#### Calling PodSandboxStatus")
+	klog.Infof("#### Calling PodSandboxStatus for sandbox id %s", podSandBoxID)
 	resp, err := r.runtimeClient.PodSandboxStatus(ctx, &runtimeapi.PodSandboxStatusRequest{
 		PodSandboxId: podSandBoxID,
 	})
-	klog.Infof("#### Finished PodSandboxStatus")
+	klog.Infof("#### Finished PodSandboxStatus for sandbox id %s", podSandBoxID)
 	if err != nil {
+		klog.Infof("#### Got error %s", err)
 		return nil, err
 	}
 
 	if resp.Status != nil {
+		klog.Infof("#### Got response status: %s", resp.Status)
 		if err := verifySandboxStatus(resp.Status); err != nil {
 			return nil, err
 		}
