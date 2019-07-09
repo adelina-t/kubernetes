@@ -222,11 +222,16 @@ func (g *GenericPLEG) relist() {
 		return
 	}
 
+	start = time.Now()
 	g.updateRelistTime(timestamp)
+	timeTrack(start, fmt.Sprintf("### UPDATE RELIST TIME IN PLEG: ID %s", relist_id))
 
+	start = time.Now()
 	pods := kubecontainer.Pods(podList)
 	g.podRecords.setCurrent(pods)
+	timeTrack(start, fmt.Sprintf("### KUBECONTAINER PODS CALL IN PLEG: ID %s", relist_id))
 
+	start = time.Now()
 	// Compare the old and the current pods, and generate events.
 	eventsByPodID := map[types.UID][]*PodLifecycleEvent{}
 	for pid := range g.podRecords {
@@ -241,12 +246,16 @@ func (g *GenericPLEG) relist() {
 			}
 		}
 	}
+	timeTrack(start, fmt.Sprintf("### COMPARE OLD AND CURRENT PODS IN PLEG: ID %s", relist_id))
 
+	start = time.Now()
 	var needsReinspection map[types.UID]*kubecontainer.Pod
 	if g.cacheEnabled() {
 		needsReinspection = make(map[types.UID]*kubecontainer.Pod)
 	}
+	timeTrack(start, fmt.Sprintf("### SET NEED REINSPECTION IN PLEG: ID %s", relist_id))
 
+	start = time.Now()
 	// If there are events associated with a pod, we should update the
 	// podCache.
 	for pid, events := range eventsByPodID {
@@ -291,7 +300,9 @@ func (g *GenericPLEG) relist() {
 			}
 		}
 	}
+	timeTrack(start, fmt.Sprintf("### UPDATE POD CACHE WITH EVENTS IN PLEG: ID %s", relist_id))
 
+	start = time.Now()
 	if g.cacheEnabled() {
 		// reinspect any pods that failed inspection during the previous relist
 		if len(g.podsToReinspect) > 0 {
@@ -309,9 +320,13 @@ func (g *GenericPLEG) relist() {
 		// all pods have been properly updated in the cache.
 		g.cache.UpdateTime(timestamp)
 	}
+	timeTrack(start, fmt.Sprintf("### REINSPECT ANY POD THAT FAILED INSPECTION: ID %s", relist_id))
 
 	// make sure we retain the list of pods that need reinspecting the next time relist is called
+	start = time.Now()
 	g.podsToReinspect = needsReinspection
+	timeTrack(start, fmt.Sprintf("### SET PODS THAT NEED REINSPECTION: ID %s", relist_id))
+	timeTrack(time.Now(), fmt.Sprintf("### FINISHED RELIST: ID %s", relist_id))
 }
 
 func getContainersFromPods(pods ...*kubecontainer.Pod) []*kubecontainer.Container {
