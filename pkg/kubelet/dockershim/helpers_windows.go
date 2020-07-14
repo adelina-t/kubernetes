@@ -43,6 +43,10 @@ func (ds *dockerService) getSecurityOpts(seccompProfile string, separator rune) 
 	return nil, nil
 }
 
+func (ds *dockerService) getSandBoxSecurityOpts(separator rune) []string {
+	return nil
+}
+
 // applyExperimentalCreateConfig applys experimental configures from sandbox annotations.
 func applyExperimentalCreateConfig(createConfig *dockertypes.ContainerCreateConfig, annotations map[string]string) {
 	if kubeletapis.ShouldIsolatedByHyperV(annotations) {
